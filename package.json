@@ -22,8 +22,5 @@
   },
   "bin": {
     "track": "src/index.js"
-  },
-  "files": [
-    "src"
-  ]
+  }
 }
