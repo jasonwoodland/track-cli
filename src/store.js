@@ -13,7 +13,6 @@ const INITIAL_STATE = {
 export function readStore() {
   try {
     const file = fs.readFileSync(PERSIST_FILENAME).toString()
-    console.log(file)
     return JSON.parse(file)
   } catch (e) {
     return INITIAL_STATE
