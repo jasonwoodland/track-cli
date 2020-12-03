@@ -205,7 +205,8 @@ yargs(process.argv.slice(2))
       })
       .option('frames', {
         alias: 'f',
-        description: 'Display individual frames'
+        description: 'Display individual frames',
+        type: 'boolean'
       })
   ), (argv) => {
     let projects
@@ -224,7 +225,7 @@ yargs(process.argv.slice(2))
         tasks = Object.entries(project.tasks)
       }
 
-      if (!tasks.filter(t => argv.tag ? t.tags?.includes(argv.tag) : true).length) {
+      if (argv.tag && !Object.values(project.tasks).some(t => t.tags?.includes(argv.tag))) {
         return
       }
 
