@@ -44,6 +44,23 @@ function formatTags(tags) {
   return `[${tags.map(t => chalk.yellow(t)).join(', ')}]`
 }
 
+function formatDuration(a, b) {
+  a = typeof a === 'Date' ? a.getTime() : a
+  b = typeof b === 'Date' ? b.getTime() : b
+  const d = (b - a) / 1000
+  const h = Math.floor(d / 3600)
+  const m = Math.floor((d % 3600) / 60)
+  const parts = []
+  if (h) {
+    parts.push(`${h} hour${h > 1 ? 's' : ''}`)
+  }
+  if (m) {
+    parts.push(`${m} minute${m > 1 ? 's' : ''}`)
+  }
+
+  return parts.join(' ')
+}
+
 function error(message) {
   log(chalk`{red Error:} ${message}`)
   process.exit(1)
@@ -81,7 +98,7 @@ yargs(process.argv.slice(2))
     const task = getTask(project, store.state.task)
     task.frames.push(frame)
 
-    const dur = formatDistanceStrict(
+    const dur = formatDuration(
       parseISO(frame.end),
       parseISO(frame.start)
     )
@@ -109,7 +126,7 @@ yargs(process.argv.slice(2))
     const task = getTask(project, argv.task)
     task.frames.push(frame)
 
-    const dur = formatDistanceStrict(
+    const dur = formatDuration(
       parseISO(frame.end),
       parseISO(frame.start)
     )
@@ -189,7 +206,7 @@ yargs(process.argv.slice(2))
     const project = getProject(store.state.project)
     const task = getTask(project, store.state.task)
     log(chalk`Running: {magenta ${store.state.project}} {blue ${store.state.task}} ${formatTags(task.tags)}`)
-    const dur = formatDistanceStrict(
+    const dur = formatDuration(
       parseISO(store.state.start),
       Date.now()
     )
@@ -229,7 +246,7 @@ yargs(process.argv.slice(2))
         return
       }
 
-      const total = formatDistanceStrict(0, tasks.reduce((acc, [_taskName, task]) => {
+      const total = formatDuration(0, tasks.reduce((acc, [_taskName, task]) => {
         if (argv.tag && !task.tags.includes(argv.tag)) {
           return acc
         }
@@ -245,13 +262,17 @@ yargs(process.argv.slice(2))
           return
         }
 
-        const total = formatDistanceStrict(0, task.frames.reduce((acc, frame) => (
+        const total = formatDuration(0, task.frames.reduce((acc, frame) => (
           acc + parseISO(frame.end).getTime() - parseISO(frame.start).getTime()
         ), 0))
 
-        log(chalk`  {blue ${taskName}} ${formatTags(task.tags)} {dim (${total})}`)
+        if (task.tags.length) {
+          log(chalk`  {blue ${taskName}} ${formatTags(task.tags)} {dim (${total})}`)
+        } else {
+          log(chalk`  {blue ${taskName}} {dim (${total})}`)
+        }
         task.frames.forEach((frame, key) => {
-          const dur = formatDistanceStrict(
+          const dur = formatDuration(
             parseISO(frame.start),
             parseISO(frame.end)
           )
