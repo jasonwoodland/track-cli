@@ -246,7 +246,7 @@ yargs(process.argv.slice(2))
         }
 
         const total = formatDistanceStrict(0, task.frames.reduce((acc, frame) => (
-          parseISO(frame.end).getTime() - parseISO(frame.start).getTime()
+          acc + parseISO(frame.end).getTime() - parseISO(frame.start).getTime()
         ), 0))
 
         log(chalk`  {blue ${taskName}} ${formatTags(task.tags)} {dim (${total})}`)
