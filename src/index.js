@@ -84,6 +84,20 @@ yargs(process.argv.slice(2))
     }
   })
 
+  .command('restart', 'Restart the start time for the current task', () => {}, (argv) => {
+    if (!store.state.running) {
+      error('No task running')
+    }
+
+    log(chalk`Restarted at {green ${format(Date.now(), 'hh:mm')}}`)
+
+    store.state = {
+      ...store.state,
+      running: true,
+      start: formatISO(Date.now())
+    }
+  })
+
   .command('stop', 'Stop tracking the current task', () => {}, (argv) => {
     if (!store.state.running) {
       error('No task running')
