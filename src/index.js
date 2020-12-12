@@ -123,8 +123,8 @@ yargs(process.argv.slice(2))
     task.frames.push(frame)
 
     const dur = formatDuration(
-      parseISO(frame.end),
-      parseISO(frame.start)
+      parseISO(frame.start),
+      parseISO(frame.end)
     )
 
     store.state = {
