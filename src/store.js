@@ -1,7 +1,7 @@
 import fs from 'fs'
 
-const LOCAL_PATH = `${process.env.HOME}/.local/share/track-cli`
-const PERSIST_FILENAME = `${LOCAL_PATH}/store.json`
+export const LOCAL_PATH = `${process.env.HOME}/.local/share/track-cli`
+export const PERSIST_FILENAME = `${LOCAL_PATH}/store.json`
 
 const INITIAL_STATE = {
   projects: {},

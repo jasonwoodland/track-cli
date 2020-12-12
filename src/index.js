@@ -10,7 +10,8 @@ import {
   parseISO,
   subMilliseconds
 } from 'date-fns'
-import { readStore, writeStore } from './store.js'
+import { readStore, writeStore, PERSIST_FILENAME } from './store.js'
+import child_process from 'child_process'
 
 const log = console.log
 const store = readStore()
@@ -96,6 +97,15 @@ yargs(process.argv.slice(2))
       running: true,
       start: formatISO(Date.now())
     }
+  })
+
+  .command('edit', `Edit the the JSON store with ${process.env.EDITOR || 'vi'}`, () => {}, (argv) => {
+    const shell = process.env.SHELL
+    const editor = process.env.EDITOR || 'vi'
+    // $SHELL --interactive --command "$EDITOR store.json"
+    child_process.spawn(shell, ['-ic', `${editor} "${PERSIST_FILENAME}"`], {
+      stdio: 'inherit'
+    })
   })
 
   .command('stop', 'Stop tracking the current task', () => {}, (argv) => {
