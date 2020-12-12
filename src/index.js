@@ -52,10 +52,10 @@ function formatDuration(a, b) {
   const m = Math.floor((d % 3600) / 60)
   const parts = []
   if (h) {
-    parts.push(`${h} hour${h === 1 ? 's' : ''}`)
+    parts.push(`${h} hour${h !== 1 ? 's' : ''}`)
   }
   if (m || !h) {
-    parts.push(`${m} minute${m === 1 ? 's' : ''}`)
+    parts.push(`${m} minute${m !== 1 ? 's' : ''}`)
   }
 
   return parts.join(' ')
