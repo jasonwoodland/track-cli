@@ -75,7 +75,7 @@ yargs(process.argv.slice(2))
       error('Task already running')
     }
 
-    log(chalk`Started at {green ${format(Date.now(), 'hh:mm')}}`)
+    log(chalk`Started at {green ${format(Date.now(), 'HH:mm')}}`)
 
     store.state = {
       running: true,
@@ -90,7 +90,7 @@ yargs(process.argv.slice(2))
       error('No task running')
     }
 
-    log(chalk`Restarted at {green ${format(Date.now(), 'hh:mm')}}`)
+    log(chalk`Restarted at {green ${format(Date.now(), 'HH:mm')}}`)
 
     store.state = {
       ...store.state,
@@ -131,7 +131,7 @@ yargs(process.argv.slice(2))
       running: false
     }
 
-    log(chalk`Added frame at {green ${format(Date.now(), 'hh:mm')}} {dim (started ${dur} ago)}`)
+    log(chalk`Added frame at {green ${format(Date.now(), 'HH:mm')}} {dim (started ${dur} ago)}`)
   })
 
   .command('add <project> <task> <duration>', 'Add a frame', () => {}, (argv) => {
@@ -159,7 +159,7 @@ yargs(process.argv.slice(2))
       running: false
     }
 
-    log(chalk`Stopped at {green ${format(Date.now(), 'hh:mm')}} {dim (started ${dur} ago)}`)
+    log(chalk`Stopped at {green ${format(Date.now(), 'HH:mm')}} {dim (started ${dur} ago)}`)
   })
 
   .command('cancel', 'Cancel current task', () => {}, (argv) => {
@@ -234,7 +234,7 @@ yargs(process.argv.slice(2))
       parseISO(store.state.start),
       Date.now()
     )
-    const start = format(new Date(store.state.start), 'hh:mm')
+    const start = format(new Date(store.state.start), 'HH:mm')
     log(chalk`  Started at: {green ${start}} {dim (${dur} ago)}`)
   })
 
@@ -301,8 +301,8 @@ yargs(process.argv.slice(2))
             parseISO(frame.end)
           )
           const date = format(new Date(frame.start), 'ccc d MMM')
-          const start = format(new Date(frame.start), 'hh:mm')
-          const end = format(new Date(frame.end), 'hh:mm')
+          const start = format(new Date(frame.start), 'HH:mm')
+          const end = format(new Date(frame.end), 'HH:mm')
           if (argv.frames) {
             log(chalk`    [${key}] {cyan ${date}} {green ${start} - ${end}} {dim (${dur})}`)
           }
