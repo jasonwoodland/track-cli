@@ -1,6 +1,6 @@
 {
   "name": "track-cli",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Track your time in the terminal",
   "main": "src/index.js",
   "author": "Jason Woodland (@jasonwoodland)",
