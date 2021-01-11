@@ -13,7 +13,7 @@ import {
 import { readStore, writeStore, PERSIST_FILENAME } from './store.js'
 import child_process from 'child_process'
 
-const log = console.log
+export const log = console.log
 const store = readStore()
 
 function getProject(name) {
@@ -141,8 +141,10 @@ yargs(process.argv.slice(2))
 
     const now = Date.now()
 
+    const durMs = argv.duration.split(' ').reduce((a, c) => a += ms(c), 0)
+
     const frame = {
-      start: formatISO(subMilliseconds(now, ms(argv.duration))),
+      start: formatISO(subMilliseconds(now, durMs)),
       end: formatISO(now)
     }
 
