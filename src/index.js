@@ -16,6 +16,10 @@ import child_process from 'child_process'
 export const log = console.log
 const store = readStore()
 
+function projectExists(name) {
+  return Object.keys(store.projects).includes(name)
+}
+
 function getProject(name) {
   if (!store.projects[name]) {
     store.projects[name] = {
@@ -247,16 +251,32 @@ yargs(process.argv.slice(2))
         description: 'Filter tasks by tag'
       })
       .option('frames', {
-        alias: 'f',
+        alias: 'i',
         description: 'Display individual frames',
         type: 'boolean'
+      })
+      .option('from', {
+        alias: 'f',
+        description: 'Filter from this date',
+        type: 'string'
+      })
+      .option('to', {
+        alias: 't',
+        description: 'Filter to this date',
+        type: 'string'
       })
   ), (argv) => {
     let projects
     let tasks
+    const isoFrom = parseISO(argv.from) ?? Date(0)
+    const isoTo = (parseISO(argv.to)) ?? Date()
 
     if (argv.project) {
-      projects = [[argv.project, getProject(argv.project)]]
+      if (projectExists(argv.project)) {
+        projects = [[argv.project, getProject(argv.project)]]
+      } else {
+        error(`Project "${argv.project}" does not exist`)
+      }
     } else {
       projects = Object.entries(store.projects)
     }
@@ -276,7 +296,16 @@ yargs(process.argv.slice(2))
         if (argv.tag && !task.tags.includes(argv.tag)) {
           return acc
         }
-        return acc + task.frames?.reduce((acc, frame) => (
+        const frames = task.frames?.filter(frame => {
+          if (parseISO(frame.start).getTime() < isoFrom) {
+            return false
+          }
+          if (parseISO(frame.end).getTime() < isoTo) {
+            return false
+          }
+          return true
+        })
+        return acc + frames?.reduce((acc, frame) => (
           acc + (parseISO(frame.end).getTime() - parseISO(frame.start).getTime())
         ), 0)
       }, 0))
@@ -288,7 +317,19 @@ yargs(process.argv.slice(2))
           return
         }
 
-        const total = formatDuration(0, task.frames.reduce((acc, frame) => (
+        const frames = task.frames?.filter(frame => {
+          if (parseISO(frame.start).getTime() < isoFrom) {
+            return false
+          }
+          if (parseISO(frame.end).getTime() < isoTo) {
+            return false
+          }
+          return true
+        })
+        if (!frames?.length) {
+          return
+        }
+        const total = formatDuration(0, frames.reduce((acc, frame) => (
           acc + parseISO(frame.end).getTime() - parseISO(frame.start).getTime()
         ), 0))
 
@@ -297,7 +338,7 @@ yargs(process.argv.slice(2))
         } else {
           log(chalk`  {blue ${taskName}} {dim (${total})}`)
         }
-        task.frames.forEach((frame, key) => {
+        frames?.forEach((frame, key) => {
           const dur = formatDuration(
             parseISO(frame.start),
             parseISO(frame.end)
